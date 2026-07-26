@@ -127,18 +127,18 @@ export default function AdminAccountsPage() {
               expenses.
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <button
               type="button"
               onClick={() => setIncomeOpen(true)}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white"
+              className="flex items-center justify-center gap-1.5 px-4 py-3 min-h-11 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white"
             >
               <Plus className="w-3.5 h-3.5" /> Add Income
             </button>
             <button
               type="button"
               onClick={() => setExpenseOpen(true)}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white"
+              className="flex items-center justify-center gap-1.5 px-4 py-3 min-h-11 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 text-white"
             >
               <Plus className="w-3.5 h-3.5" /> Add Expense
             </button>
@@ -146,38 +146,46 @@ export default function AdminAccountsPage() {
         </div>
 
         {/* Date filter */}
-        <div className="glass-panel p-4 rounded-2xl border border-slate-800 flex flex-wrap items-end gap-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
+        <div className="glass-panel p-3 sm:p-4 rounded-2xl border border-slate-800">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-400 mb-3">
             <Filter className="w-3.5 h-3.5" /> Date filter
           </div>
-          <input
-            type="date"
-            value={dateFrom}
-            onChange={(e) => setDateFrom(e.target.value)}
-            className="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"
-          />
-          <input
-            type="date"
-            value={dateTo}
-            onChange={(e) => setDateTo(e.target.value)}
-            className="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"
-          />
-          {(dateFrom || dateTo) && (
-            <button
-              type="button"
-              onClick={() => {
-                setDateFrom('');
-                setDateTo('');
-              }}
-              className="text-xs text-slate-400 hover:text-white"
-            >
-              Clear
-            </button>
-          )}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_auto] gap-3 items-end">
+            <div>
+              <label className="text-[10px] text-slate-500 block mb-1">From</label>
+              <input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
+              />
+            </div>
+            <div>
+              <label className="text-[10px] text-slate-500 block mb-1">To</label>
+              <input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
+              />
+            </div>
+            {(dateFrom || dateTo) && (
+              <button
+                type="button"
+                onClick={() => {
+                  setDateFrom('');
+                  setDateTo('');
+                }}
+                className="text-xs text-slate-400 hover:text-white px-3 py-2.5 min-h-11"
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Summary KPIs */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           <Stat label="Deal profit (100%)" value={formatINR(totalDealProfit)} />
           <Stat label="Staff earnings (40%)" value={formatINR(totalStaffEarnings)} accent="text-blue-300" />
           <Stat label="Tripeloo share (60%)" value={formatINR(totalTripelooShare)} accent="text-amber-300" />
@@ -199,7 +207,7 @@ export default function AdminAccountsPage() {
             <h2 className="text-sm font-bold text-white">Staff-wise earnings</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full min-w-[560px] text-left text-xs">
               <thead className="bg-slate-900/80 text-slate-400 text-[10px] uppercase">
                 <tr>
                   <th className="px-4 py-3">Staff</th>
@@ -242,7 +250,7 @@ export default function AdminAccountsPage() {
             <h2 className="text-sm font-bold text-white">Closed deals — profit split</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full min-w-[720px] text-left text-xs">
               <thead className="bg-slate-900/80 text-slate-400 text-[10px] uppercase">
                 <tr>
                   <th className="px-4 py-3">Customer</th>
@@ -376,9 +384,11 @@ function Stat({
   accent?: string;
 }) {
   return (
-    <div className="glass-panel p-4 rounded-2xl border border-slate-800">
+    <div className="glass-panel p-4 rounded-2xl border border-slate-800 min-w-0">
       <p className="text-[10px] text-slate-400">{label}</p>
-      <p className={`text-xl font-black font-mono mt-1 ${accent}`}>{value}</p>
+      <p className={`text-base sm:text-xl font-black font-mono mt-1 money-break leading-tight ${accent}`}>
+        {value}
+      </p>
     </div>
   );
 }
@@ -404,14 +414,14 @@ function EntryList({
           {items.map((item) => (
             <div
               key={item.id}
-              className="flex items-start justify-between gap-3 p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs"
+              className="flex items-start justify-between gap-3 p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs min-w-0"
             >
-              <div>
-                <p className="font-semibold text-white">{item.title}</p>
-                <p className="text-slate-500 mt-0.5">{item.meta}</p>
+              <div className="min-w-0">
+                <p className="font-semibold text-white truncate">{item.title}</p>
+                <p className="text-slate-500 mt-0.5 truncate">{item.meta}</p>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <span className={`font-mono font-bold ${item.amountClass}`}>
+              <div className="flex items-center gap-1 shrink-0">
+                <span className={`font-mono font-bold whitespace-nowrap ${item.amountClass}`}>
                   {formatINR(item.amount)}
                 </span>
                 <button
@@ -419,9 +429,10 @@ function EntryList({
                   onClick={() => {
                     if (confirm('Delete this entry?')) onDelete(item.id);
                   }}
-                  className="p-1.5 text-slate-500 hover:text-rose-400"
+                  className="p-2.5 min-h-11 min-w-11 text-slate-500 hover:text-rose-400"
+                  aria-label="Delete"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -464,7 +475,7 @@ function MoneyModal({
       : 'bg-emerald-600 hover:bg-emerald-500';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
       <form
         onSubmit={async (e) => {
@@ -479,11 +490,16 @@ function MoneyModal({
           });
           setSaving(false);
         }}
-        className="relative w-full max-w-md glass-panel bg-slate-900 border border-slate-700 rounded-3xl p-6 space-y-4 shadow-2xl"
+        className="relative w-full max-w-md max-h-[92dvh] overflow-y-auto glass-panel bg-slate-900 border border-slate-700 rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 space-y-4 shadow-2xl safe-pb"
       >
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <h3 className="text-sm font-bold text-white">{title}</h3>
-          <button type="button" onClick={onClose} className="p-1.5 text-slate-400 hover:text-white">
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-2.5 min-h-11 min-w-11 text-slate-400 hover:text-white"
+            aria-label="Close"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -492,9 +508,9 @@ function MoneyModal({
           value={formTitle}
           onChange={(e) => setFormTitle(e.target.value)}
           placeholder="Title"
-          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
+          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-3 text-sm text-white"
         />
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <input
             required
             type="number"
@@ -502,12 +518,12 @@ function MoneyModal({
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="Amount (₹)"
-            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white font-mono"
+            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-3 text-sm text-white font-mono"
           />
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
+            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-3 text-sm text-white"
           >
             {categories.map((c) => (
               <option key={c} value={c}>
@@ -521,7 +537,7 @@ function MoneyModal({
           required
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
+          className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-3 text-sm text-white"
         />
         <textarea
           rows={2}
@@ -533,7 +549,7 @@ function MoneyModal({
         <button
           type="submit"
           disabled={saving}
-          className={`w-full py-2.5 rounded-xl text-xs font-bold text-white disabled:opacity-60 ${btn}`}
+          className={`w-full py-3 min-h-12 rounded-xl text-sm font-bold text-white disabled:opacity-60 ${btn}`}
         >
           {saving ? 'Saving…' : 'Save'}
         </button>

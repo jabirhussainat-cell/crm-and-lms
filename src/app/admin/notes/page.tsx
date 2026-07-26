@@ -157,34 +157,36 @@ export default function AdminNotesPage() {
           </button>
         </form>
 
-        <div className="flex flex-wrap items-end gap-3 glass-panel p-4 rounded-2xl border border-slate-800">
+        <div className="glass-panel p-3 sm:p-4 rounded-2xl border border-slate-800 space-y-3">
           <div className="flex items-center gap-2 text-xs text-slate-400 font-semibold">
             <Filter className="w-3.5 h-3.5" /> Filter
           </div>
-          <select
-            value={labelFilter}
-            onChange={(e) => setLabelFilter(e.target.value as AdminNoteLabel | 'all')}
-            className="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"
-          >
-            <option value="all">All labels</option>
-            {ADMIN_NOTE_LABELS.map((l) => (
-              <option key={l} value={l}>
-                {l}
-              </option>
-            ))}
-          </select>
-          <input
-            type="date"
-            value={dateFrom}
-            onChange={(e) => setDateFrom(e.target.value)}
-            className="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"
-          />
-          <input
-            type="date"
-            value={dateTo}
-            onChange={(e) => setDateTo(e.target.value)}
-            className="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"
-          />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <select
+              value={labelFilter}
+              onChange={(e) => setLabelFilter(e.target.value as AdminNoteLabel | 'all')}
+              className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
+            >
+              <option value="all">All labels</option>
+              {ADMIN_NOTE_LABELS.map((l) => (
+                <option key={l} value={l}>
+                  {l}
+                </option>
+              ))}
+            </select>
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
+            />
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
+            />
+          </div>
         </div>
 
         {Object.keys(labelCounts).length > 0 && (
@@ -226,7 +228,8 @@ export default function AdminNotesPage() {
                 <button
                   type="button"
                   onClick={() => remove(n.id)}
-                  className="shrink-0 p-2 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10"
+                  className="shrink-0 p-2.5 min-h-11 min-w-11 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10"
+                  aria-label="Delete note"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

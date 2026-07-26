@@ -74,7 +74,7 @@ export default function StaffPortalPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col pb-16 lg:pb-0">
+    <div className="min-h-screen bg-slate-950 flex flex-col pb-20 lg:pb-0">
       <StaffNavbar onOpenMobileMenu={() => setIsMobileMenuOpen(true)} />
 
       <div className="flex-1 flex overflow-hidden">
@@ -83,53 +83,57 @@ export default function StaffPortalPage() {
           onCloseMobile={() => setIsMobileMenuOpen(false)}
         />
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 max-w-5xl mx-auto w-full">
-          <div className="glass-panel p-6 rounded-3xl border border-slate-800">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6 lg:p-8 space-y-5 sm:space-y-6 max-w-5xl mx-auto w-full min-w-0">
+          <div className="glass-panel p-4 sm:p-6 rounded-3xl border border-slate-800">
             <p className="text-xs font-bold uppercase tracking-widest text-emerald-400 mb-1">
               Menu 1 · Attendance
             </p>
-            <h1 className="text-2xl font-black text-white tracking-tight">Hi, {user.name}</h1>
+            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight break-words">
+              Hi, {user.name}
+            </h1>
             <p className="text-sm text-slate-400 mt-1">
               Check in / out, review lead counts, and see your attendance log.
             </p>
           </div>
 
           {/* Date filter */}
-          <div className="flex flex-wrap items-end gap-3 glass-panel p-4 rounded-2xl border border-slate-800">
+          <div className="glass-panel p-3 sm:p-4 rounded-2xl border border-slate-800 space-y-3">
             <div className="flex items-center gap-2 text-slate-400 text-xs font-semibold">
               <Calendar className="w-4 h-4 text-blue-400" />
               Date filter
             </div>
-            <div>
-              <label className="block text-[10px] text-slate-500 mb-1">From</label>
-              <input
-                type="date"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
-                className="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_auto] gap-3 items-end">
+              <div>
+                <label className="block text-[10px] text-slate-500 mb-1">From</label>
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] text-slate-500 mb-1">To</label>
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
+                />
+              </div>
+              {(dateFrom || dateTo) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDateFrom('');
+                    setDateTo('');
+                  }}
+                  className="text-xs text-slate-400 hover:text-white px-3 py-2.5 min-h-11"
+                >
+                  Clear
+                </button>
+              )}
             </div>
-            <div>
-              <label className="block text-[10px] text-slate-500 mb-1">To</label>
-              <input
-                type="date"
-                value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
-                className="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"
-              />
-            </div>
-            {(dateFrom || dateTo) && (
-              <button
-                type="button"
-                onClick={() => {
-                  setDateFrom('');
-                  setDateTo('');
-                }}
-                className="text-xs text-slate-400 hover:text-white px-3 py-2"
-              >
-                Clear
-              </button>
-            )}
           </div>
 
           {/* Counts */}
@@ -178,12 +182,12 @@ export default function StaffPortalPage() {
                 className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
               />
 
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <button
                   type="button"
                   disabled={isCheckedIn}
                   onClick={handleCheckIn}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed text-white"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 min-h-12 rounded-xl text-sm font-bold bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed text-white"
                 >
                   <LogIn className="w-4 h-4" />
                   Check In
@@ -192,7 +196,7 @@ export default function StaffPortalPage() {
                   type="button"
                   disabled={!isCheckedIn}
                   onClick={handleCheckOut}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-500 disabled:opacity-40 disabled:cursor-not-allowed text-white"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 min-h-12 rounded-xl text-sm font-bold bg-rose-600 hover:bg-rose-500 disabled:opacity-40 disabled:cursor-not-allowed text-white"
                 >
                   <LogOut className="w-4 h-4" />
                   Check Out
@@ -222,9 +226,9 @@ export default function StaffPortalPage() {
                   {staffAttendance.map((rec) => (
                     <div
                       key={rec.id}
-                      className="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs"
+                      className="flex items-start sm:items-center justify-between gap-3 p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs min-w-0"
                     >
-                      <div>
+                      <div className="min-w-0">
                         <p className="font-semibold text-white">{rec.date}</p>
                         <p className="text-slate-400 mt-0.5">
                           In <span className="text-emerald-400 font-mono">{rec.checkInTime}</span>
@@ -235,7 +239,9 @@ export default function StaffPortalPage() {
                             </>
                           )}
                         </p>
-                        {rec.notes && <p className="text-slate-500 mt-1 italic">{rec.notes}</p>}
+                        {rec.notes && (
+                          <p className="text-slate-500 mt-1 italic break-words">{rec.notes}</p>
+                        )}
                       </div>
                       <span
                         className={`shrink-0 text-[9px] font-extrabold uppercase px-2 py-0.5 rounded border ${
@@ -271,17 +277,17 @@ export default function StaffPortalPage() {
                 {staffLeads.slice(0, 20).map((lead) => (
                   <div
                     key={lead.id}
-                    className="flex items-center justify-between p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs"
+                    className="flex items-start sm:items-center justify-between gap-3 p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs min-w-0"
                   >
-                    <div>
-                      <p className="font-semibold text-white">{lead.customerName}</p>
-                      <p className="text-slate-400">
+                    <div className="min-w-0">
+                      <p className="font-semibold text-white truncate">{lead.customerName}</p>
+                      <p className="text-slate-400 break-words">
                         {lead.location || '—'} · {lead.checkInDate || 'no date'} · {lead.noOfAdults}A /{' '}
                         {lead.noOfKids}K
                       </p>
                     </div>
                     <span
-                      className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded border ${
+                      className={`shrink-0 text-[9px] font-extrabold uppercase px-2 py-0.5 rounded border ${
                         lead.status === 'closed'
                           ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
                           : lead.status === 'follow_up'

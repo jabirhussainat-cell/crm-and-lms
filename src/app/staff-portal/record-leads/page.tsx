@@ -115,7 +115,7 @@ export default function RecordLeadsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col pb-16 lg:pb-0">
+    <div className="min-h-screen bg-slate-950 flex flex-col pb-20 lg:pb-0">
       <StaffNavbar onOpenMobileMenu={() => setIsMobileMenuOpen(true)} />
 
       <div className="flex-1 flex overflow-hidden">
@@ -124,19 +124,19 @@ export default function RecordLeadsPage() {
           onCloseMobile={() => setIsMobileMenuOpen(false)}
         />
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 max-w-3xl mx-auto w-full">
-          <div className="glass-panel p-6 rounded-3xl border border-slate-800">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6 lg:p-8 space-y-5 sm:space-y-6 max-w-3xl mx-auto w-full min-w-0">
+          <div className="glass-panel p-4 sm:p-6 rounded-3xl border border-slate-800">
             <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-1">
               Menu 2 · Record Leads
             </p>
-            <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
-              <ClipboardList className="w-6 h-6 text-blue-400" />
+            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+              <ClipboardList className="w-6 h-6 text-blue-400 shrink-0" />
               Lead Details
             </h1>
             <p className="text-sm text-slate-400 mt-1">
               Record leads you took. Business fields unlock when status is Closed.
             </p>
-            <p className="text-[11px] text-slate-500 mt-2">
+            <p className="text-[11px] text-slate-500 mt-2 break-words">
               Recording as <span className="text-white font-semibold">{user.name}</span> · ID{' '}
               <span className="font-mono text-blue-300">{user.id}</span>
             </p>
@@ -144,7 +144,7 @@ export default function RecordLeadsPage() {
 
           <form
             onSubmit={handleSubmit}
-            className="glass-panel p-5 sm:p-6 rounded-3xl border border-slate-800 space-y-4"
+            className="glass-panel p-4 sm:p-6 rounded-3xl border border-slate-800 space-y-4"
           >
             {/* 1. Customer name */}
             <Field label="Customer Name *" icon={<Users className="w-3.5 h-3.5 text-blue-400" />}>
@@ -224,13 +224,13 @@ export default function RecordLeadsPage() {
 
             {/* 7. Status */}
             <Field label="Status">
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 {(['open', 'follow_up', 'closed'] as LeadStatus[]).map((s) => (
                   <button
                     key={s}
                     type="button"
                     onClick={() => set('status', s)}
-                    className={`py-2.5 rounded-xl text-xs font-bold capitalize border transition ${
+                    className={`py-3 min-h-12 rounded-xl text-sm font-bold capitalize border transition ${
                       form.status === s
                         ? s === 'closed'
                           ? 'bg-emerald-600 text-white border-emerald-500'
@@ -394,22 +394,21 @@ export default function RecordLeadsPage() {
             </button>
           </form>
 
-          {/* Date-filtered list of recorded leads */}
-          <div className="glass-panel p-5 rounded-3xl border border-slate-800 space-y-3">
-            <div className="flex flex-wrap items-end justify-between gap-3">
+          <div className="glass-panel p-4 sm:p-5 rounded-3xl border border-slate-800 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
               <h2 className="text-sm font-bold text-white">My recorded leads</h2>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full sm:w-auto">
                 <input
                   type="date"
                   value={listFrom}
                   onChange={(e) => setListFrom(e.target.value)}
-                  className="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white"
+                  className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
                 />
                 <input
                   type="date"
                   value={listTo}
                   onChange={(e) => setListTo(e.target.value)}
-                  className="bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white"
+                  className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
                 />
               </div>
             </div>
@@ -421,20 +420,20 @@ export default function RecordLeadsPage() {
                 {myLeads.map((lead) => (
                   <div
                     key={lead.id}
-                    className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs space-y-1"
+                    className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs space-y-1 min-w-0"
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="font-bold text-white">{lead.customerName}</p>
-                      <span className="text-[9px] uppercase font-extrabold text-slate-400">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="font-bold text-white truncate min-w-0">{lead.customerName}</p>
+                      <span className="text-[9px] uppercase font-extrabold text-slate-400 shrink-0">
                         {lead.status}
                       </span>
                     </div>
-                    <p className="text-slate-400">
+                    <p className="text-slate-400 break-words">
                       {lead.checkInDate || '—'} → {lead.checkOutDate || '—'} · {lead.location || '—'} ·{' '}
                       {lead.noOfAdults}A / {lead.noOfKids}K
                     </p>
                     {lead.status === 'closed' && (
-                      <p className="text-slate-500">
+                      <p className="text-slate-500 break-words">
                         {lead.propertyName}
                         {lead.profitShare || lead.propertyType
                           ? ` · share: ${lead.profitShare || lead.propertyType}`
@@ -454,7 +453,7 @@ export default function RecordLeadsPage() {
 }
 
 const inputCls =
-  'w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500';
+  'w-full min-w-0 bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500';
 
 function Field({
   label,

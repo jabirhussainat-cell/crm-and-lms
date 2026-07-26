@@ -8,6 +8,14 @@ export const metadata: Metadata = {
   description: 'Beautifully designed responsive CRM for Tripeloo travel staff and admins with phone & name focused lead management, status pipeline, and staff profiles.',
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover' as const,
+  themeColor: '#020617'
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -15,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className="antialiased selection:bg-blue-500 selection:text-white bg-slate-950 text-slate-100 min-h-screen">
+      <body className="antialiased selection:bg-blue-500 selection:text-white bg-slate-950 text-slate-100 min-h-screen min-w-0 overflow-x-hidden">
         <AuthProvider>
           <CRMProvider>{children}</CRMProvider>
         </AuthProvider>

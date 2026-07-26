@@ -73,7 +73,7 @@ export default function AdminLeadsPage() {
               <select
                 value={staffId}
                 onChange={(e) => setStaffId(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"
+                className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
               >
                 <option value="all">All staff</option>
                 {staffMembers.map((s) => (
@@ -88,7 +88,7 @@ export default function AdminLeadsPage() {
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as LeadStatus | 'all')}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"
+                className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
               >
                 <option value="all">All</option>
                 <option value="open">Open / Pending</option>
@@ -102,7 +102,7 @@ export default function AdminLeadsPage() {
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"
+                className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
               />
             </div>
             <div>
@@ -111,7 +111,7 @@ export default function AdminLeadsPage() {
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"
+                className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
               />
             </div>
             <div>
@@ -120,7 +120,7 @@ export default function AdminLeadsPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Name, location, phone…"
-                className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"
+                className="w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white"
               />
             </div>
           </div>
@@ -135,26 +135,26 @@ export default function AdminLeadsPage() {
         </div>
 
         {/* Monthly graph */}
-        <div className="glass-panel p-5 rounded-2xl border border-slate-800">
+        <div className="glass-panel p-4 sm:p-5 rounded-2xl border border-slate-800 min-w-0">
           <h2 className="text-sm font-bold text-white mb-4">Monthly leads (last 6 months)</h2>
           <MonthlyLeadsChart data={monthly} />
         </div>
 
         {/* Table */}
-        <div className="glass-panel rounded-2xl border border-slate-800 overflow-hidden">
-          <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
+        <div className="glass-panel rounded-2xl border border-slate-800 overflow-hidden min-w-0">
+          <div className="px-3 sm:px-4 py-3 border-b border-slate-800 flex items-center justify-between">
             <h2 className="text-sm font-bold text-white">Lead list ({filtered.length})</h2>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto -webkit-overflow-scrolling-touch">
+            <table className="w-full min-w-[640px] text-left text-xs">
               <thead className="bg-slate-900/80 text-slate-400 uppercase tracking-wider text-[10px]">
                 <tr>
-                  <th className="px-4 py-3 font-semibold">Customer</th>
-                  <th className="px-4 py-3 font-semibold">Staff</th>
-                  <th className="px-4 py-3 font-semibold">Check-in</th>
-                  <th className="px-4 py-3 font-semibold">Location</th>
-                  <th className="px-4 py-3 font-semibold">Status</th>
-                  <th className="px-4 py-3 font-semibold">Contact</th>
+                  <th className="px-3 sm:px-4 py-3 font-semibold">Customer</th>
+                  <th className="px-3 sm:px-4 py-3 font-semibold">Staff</th>
+                  <th className="px-3 sm:px-4 py-3 font-semibold">Check-in</th>
+                  <th className="px-3 sm:px-4 py-3 font-semibold">Location</th>
+                  <th className="px-3 sm:px-4 py-3 font-semibold">Status</th>
+                  <th className="px-3 sm:px-4 py-3 font-semibold">Contact</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800">
@@ -167,14 +167,20 @@ export default function AdminLeadsPage() {
                 ) : (
                   filtered.map((l) => (
                     <tr key={l.id} className="hover:bg-slate-900/50">
-                      <td className="px-4 py-3 text-white font-semibold">{l.customerName}</td>
-                      <td className="px-4 py-3 text-slate-300">{l.staffName}</td>
-                      <td className="px-4 py-3 font-mono text-slate-400">{l.checkInDate || '—'}</td>
-                      <td className="px-4 py-3 text-slate-300">{l.location || '—'}</td>
-                      <td className="px-4 py-3">
+                      <td className="px-3 sm:px-4 py-3 text-white font-semibold whitespace-nowrap">
+                        {l.customerName}
+                      </td>
+                      <td className="px-3 sm:px-4 py-3 text-slate-300 whitespace-nowrap">{l.staffName}</td>
+                      <td className="px-3 sm:px-4 py-3 font-mono text-slate-400 whitespace-nowrap">
+                        {l.checkInDate || '—'}
+                      </td>
+                      <td className="px-3 sm:px-4 py-3 text-slate-300 whitespace-nowrap">
+                        {l.location || '—'}
+                      </td>
+                      <td className="px-3 sm:px-4 py-3">
                         <StatusPill status={l.status} />
                       </td>
-                      <td className="px-4 py-3 font-mono text-emerald-400/90">
+                      <td className="px-3 sm:px-4 py-3 font-mono text-emerald-400/90 whitespace-nowrap">
                         {l.customerContactNumber || '—'}
                       </td>
                     </tr>

@@ -82,7 +82,7 @@ export default function AdminStaffsPage() {
               >
                 {editingId === s.id ? (
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-2">
                       <p className="text-xs font-bold text-amber-300 uppercase tracking-wider">
                         Editing profile
                       </p>
@@ -90,14 +90,14 @@ export default function AdminStaffsPage() {
                         <button
                           type="button"
                           onClick={() => setEditingId(null)}
-                          className="px-3 py-1.5 rounded-lg text-xs text-slate-400 hover:bg-slate-800 flex items-center gap-1"
+                          className="flex-1 sm:flex-none px-4 py-3 min-h-11 rounded-lg text-xs text-slate-400 hover:bg-slate-800 flex items-center justify-center gap-1 border border-slate-800"
                         >
                           <X className="w-3.5 h-3.5" /> Cancel
                         </button>
                         <button
                           type="button"
                           onClick={save}
-                          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 flex items-center gap-1"
+                          className="flex-1 sm:flex-none px-4 py-3 min-h-11 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 flex items-center justify-center gap-1"
                         >
                           <Save className="w-3.5 h-3.5" /> Save
                         </button>
@@ -205,7 +205,7 @@ export default function AdminStaffsPage() {
                     <button
                       type="button"
                       onClick={() => startEdit(s)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 shrink-0"
+                      className="flex items-center justify-center gap-1.5 px-4 py-3 min-h-11 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 shrink-0 w-full sm:w-auto"
                     >
                       <Edit className="w-3.5 h-3.5" /> Edit
                     </button>
@@ -240,7 +240,7 @@ function Input({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white ${
+        className={`w-full min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-white ${
           mono ? 'font-mono' : ''
         }`}
       />

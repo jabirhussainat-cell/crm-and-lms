@@ -65,24 +65,24 @@ export const StaffProfileCard: React.FC<StaffProfileCardProps> = ({ staff, isEdi
   };
 
   return (
-    <div className="glass-panel rounded-3xl border border-slate-800 p-6 shadow-2xl relative overflow-hidden">
+    <div className="glass-panel rounded-3xl border border-slate-800 p-4 sm:p-6 shadow-2xl relative overflow-hidden min-w-0">
       {/* Top Banner Gradient */}
       <div className="absolute top-0 left-0 right-0 h-28 bg-gradient-to-r from-blue-600/30 via-indigo-600/30 to-purple-600/30 border-b border-slate-800/80 -z-0" />
 
       <div className="relative z-10 pt-4">
         {/* Main Header Row */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
-          <div className="flex items-end gap-4">
+          <div className="flex items-end gap-3 sm:gap-4 min-w-0">
             <img
               src={staff.avatar}
               alt={staff.name}
-              className="w-24 h-24 rounded-2xl object-cover ring-4 ring-slate-900 shadow-xl"
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover ring-4 ring-slate-900 shadow-xl shrink-0"
             />
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-xl font-extrabold text-white">{staff.name}</h2>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-lg sm:text-xl font-extrabold text-white break-words">{staff.name}</h2>
                 <span
-                  className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-lg border ${
+                  className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-lg border shrink-0 ${
                     staff.role === 'admin'
                       ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
                       : 'bg-blue-500/20 text-blue-300 border-blue-500/40'
@@ -91,14 +91,16 @@ export const StaffProfileCard: React.FC<StaffProfileCardProps> = ({ staff, isEdi
                   {staff.role === 'admin' ? 'CRM Admin' : 'Sales Consultant'}
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-1">{staff.expertise || staff.department || 'Staff'}</p>
+              <p className="text-xs text-slate-400 mt-1 break-words">
+                {staff.expertise || staff.department || 'Staff'}
+              </p>
               <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                <Tag className="w-3.5 h-3.5 text-blue-400" />
-                <span className="text-xs font-semibold text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded-md border border-blue-500/20">
+                <Tag className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                <span className="text-xs font-semibold text-blue-300 bg-blue-500/10 px-2 py-0.5 rounded-md border border-blue-500/20 break-words">
                   {staff.expertise || staff.focusArea || 'General'}
                 </span>
                 {staff.languagesKnown && (
-                  <span className="text-xs font-semibold text-slate-300 bg-slate-800 px-2 py-0.5 rounded-md border border-slate-700">
+                  <span className="text-xs font-semibold text-slate-300 bg-slate-800 px-2 py-0.5 rounded-md border border-slate-700 break-words">
                     {staff.languagesKnown}
                   </span>
                 )}
@@ -110,7 +112,7 @@ export const StaffProfileCard: React.FC<StaffProfileCardProps> = ({ staff, isEdi
           {isEditable && (user?.id === staff.id || isAdmin) && !isEditing && (
             <button
               onClick={() => setIsEditing(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white text-xs font-bold transition border border-blue-500/30"
+              className="flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-3 min-h-11 rounded-xl bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white text-xs font-bold transition border border-blue-500/30"
             >
               <Edit className="w-4 h-4" />
               Edit Profile
@@ -184,17 +186,17 @@ export const StaffProfileCard: React.FC<StaffProfileCardProps> = ({ staff, isEdi
               />
             </div>
 
-            <div className="flex justify-end gap-2 pt-2">
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setIsEditing(false)}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-400 hover:bg-slate-900"
+                className="px-4 py-3 min-h-11 rounded-xl text-xs font-semibold text-slate-400 hover:bg-slate-900 border border-slate-800"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold"
+                className="px-4 py-3 min-h-11 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold"
               >
                 Save Profile
               </button>

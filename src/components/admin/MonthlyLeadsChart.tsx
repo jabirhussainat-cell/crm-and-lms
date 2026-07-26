@@ -15,49 +15,57 @@ export function MonthlyLeadsChart({ data }: { data: MonthBucket[] }) {
   const max = Math.max(1, ...data.map((d) => d.total));
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-end gap-2 sm:gap-3 h-48">
-        {data.map((m) => {
-          const h = Math.round((m.total / max) * 100);
-          const closedH = m.total ? Math.round((m.closed / m.total) * h) : 0;
-          const followH = m.total ? Math.round((m.follow_up / m.total) * h) : 0;
-          const openH = Math.max(0, h - closedH - followH);
+    <div className="space-y-4 min-w-0">
+      <div className="chart-scroll">
+        <div className="flex items-end gap-2 sm:gap-3 h-48 min-w-[280px] sm:min-w-0">
+          {data.map((m) => {
+            const h = Math.round((m.total / max) * 100);
+            const closedH = m.total ? Math.round((m.closed / m.total) * h) : 0;
+            const followH = m.total ? Math.round((m.follow_up / m.total) * h) : 0;
+            const openH = Math.max(0, h - closedH - followH);
 
-          return (
-            <div key={m.key} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-              <div className="w-full flex flex-col justify-end items-stretch gap-0.5" style={{ height: '100%' }}>
-                <div className="mt-auto w-full flex flex-col justify-end rounded-t-lg overflow-hidden min-h-[4px]">
-                  {openH > 0 && (
-                    <div
-                      className="w-full bg-blue-500/80"
-                      style={{ height: `${openH}%` }}
-                      title={`Open: ${m.open}`}
-                    />
-                  )}
-                  {followH > 0 && (
-                    <div
-                      className="w-full bg-amber-500/80"
-                      style={{ height: `${followH}%` }}
-                      title={`Follow-up: ${m.follow_up}`}
-                    />
-                  )}
-                  {closedH > 0 && (
-                    <div
-                      className="w-full bg-emerald-500/80"
-                      style={{ height: `${closedH}%` }}
-                      title={`Closed: ${m.closed}`}
-                    />
-                  )}
-                  {m.total === 0 && <div className="w-full h-1 bg-slate-800 rounded" />}
+            return (
+              <div
+                key={m.key}
+                className="flex-1 flex flex-col items-center gap-2 h-full justify-end min-w-[2.5rem] sm:min-w-0"
+              >
+                <div
+                  className="w-full flex flex-col justify-end items-stretch gap-0.5"
+                  style={{ height: '100%' }}
+                >
+                  <div className="mt-auto w-full flex flex-col justify-end rounded-t-lg overflow-hidden min-h-[4px]">
+                    {openH > 0 && (
+                      <div
+                        className="w-full bg-blue-500/80"
+                        style={{ height: `${openH}%` }}
+                        title={`Open: ${m.open}`}
+                      />
+                    )}
+                    {followH > 0 && (
+                      <div
+                        className="w-full bg-amber-500/80"
+                        style={{ height: `${followH}%` }}
+                        title={`Follow-up: ${m.follow_up}`}
+                      />
+                    )}
+                    {closedH > 0 && (
+                      <div
+                        className="w-full bg-emerald-500/80"
+                        style={{ height: `${closedH}%` }}
+                        title={`Closed: ${m.closed}`}
+                      />
+                    )}
+                    {m.total === 0 && <div className="w-full h-1 bg-slate-800 rounded" />}
+                  </div>
+                </div>
+                <div className="text-center min-w-0 w-full">
+                  <p className="text-[10px] font-bold text-slate-300 truncate">{m.label}</p>
+                  <p className="text-[9px] text-slate-500">{m.total}</p>
                 </div>
               </div>
-              <div className="text-center">
-                <p className="text-[10px] font-bold text-slate-300">{m.label}</p>
-                <p className="text-[9px] text-slate-500">{m.total}</p>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-4 text-[10px] text-slate-400">
