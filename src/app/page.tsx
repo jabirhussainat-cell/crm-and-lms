@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { digitsOnlyTen, isValidTenDigitPhone, normalizePhone } from '@/lib/phone';
 import { Compass, Phone, Lock, User, Mail, Smartphone, Briefcase, Languages, ArrowRight } from 'lucide-react';
 
 type Step = 'login' | 'register';
@@ -37,13 +38,18 @@ export default function AuthRootPage() {
     e.preventDefault();
     setError('');
 
-    if (!phone.trim() || !password.trim()) {
-      setError('Enter Tripeloo number and password');
+    const normalized = normalizePhone(phone);
+    if (!isValidTenDigitPhone(normalized)) {
+      setError('Tripeloo number must be exactly 10 digits');
+      return;
+    }
+    if (!password.trim()) {
+      setError('Enter password');
       return;
     }
 
     setLoading(true);
-    const result = await loginWithPhone(phone.trim(), password);
+    const result = await loginWithPhone(normalized, password);
     setLoading(false);
 
     if (result.ok) {
@@ -52,12 +58,13 @@ export default function AuthRootPage() {
     }
 
     if (result.code === 'NOT_FOUND') {
-      setReg((prev) => ({ ...prev, phone: phone.trim(), password }));
+      setReg((prev) => ({ ...prev, phone: normalized, password }));
       setStep('register');
       setError('');
       return;
     }
 
+    // Wrong password / network — stay on login, do not open register
     setError(result.message || 'Login failed');
   };
 
@@ -65,16 +72,18 @@ export default function AuthRootPage() {
     e.preventDefault();
     setError('');
 
-    const required = [
-      reg.name,
-      reg.phone,
-      reg.password,
-      reg.devicePersonalNumber,
-      reg.email,
-      reg.expertise,
-      reg.languagesKnown
-    ];
-    if (required.some((v) => !String(v).trim())) {
+    const tripeloo = normalizePhone(reg.phone);
+    const personal = normalizePhone(reg.devicePersonalNumber);
+
+    if (!isValidTenDigitPhone(tripeloo)) {
+      setError('Tripeloo number must be exactly 10 digits');
+      return;
+    }
+    if (!isValidTenDigitPhone(personal)) {
+      setError('Personal number must be exactly 10 digits');
+      return;
+    }
+    if (!reg.name.trim() || !reg.password || !reg.email.trim() || !reg.expertise.trim() || !reg.languagesKnown.trim()) {
       setError('Please fill all fields');
       return;
     }
@@ -82,9 +91,9 @@ export default function AuthRootPage() {
     setLoading(true);
     const result = await registerStaff({
       name: reg.name.trim(),
-      phone: reg.phone.trim(),
+      phone: tripeloo,
       password: reg.password,
-      devicePersonalNumber: reg.devicePersonalNumber.trim(),
+      devicePersonalNumber: personal,
       email: reg.email.trim(),
       expertise: reg.expertise.trim(),
       languagesKnown: reg.languagesKnown.trim()
@@ -93,6 +102,14 @@ export default function AuthRootPage() {
 
     if (result.ok) {
       router.replace('/staff-portal');
+      return;
+    }
+
+    // Already registered — send back to login
+    if (result.message?.toLowerCase().includes('already')) {
+      setStep('login');
+      setPhone(tripeloo);
+      setError(result.message);
       return;
     }
 
@@ -128,7 +145,7 @@ export default function AuthRootPage() {
           </div>
           <h1 className="text-2xl font-black text-white tracking-tight">Tripeloo CRM</h1>
           <p className="text-xs text-slate-400">
-            {step === 'login' ? 'Sign in with phone & password' : 'New staff — complete your profile'}
+            {step === 'login' ? 'Sign in with 10-digit Tripeloo number' : 'New staff — complete your profile'}
           </p>
         </div>
 
@@ -137,19 +154,22 @@ export default function AuthRootPage() {
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
                 <Phone className="w-3.5 h-3.5 text-emerald-400" />
-                Tripeloo Number
+                Tripeloo Number (10 digits)
               </label>
               <input
                 type="tel"
+                inputMode="numeric"
                 autoFocus
-                placeholder="Your Tripeloo work number"
+                maxLength={10}
+                placeholder="9876543210"
                 value={phone}
                 onChange={(e) => {
-                  setPhone(e.target.value);
+                  setPhone(digitsOnlyTen(e.target.value));
                   setError('');
                 }}
                 className="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3.5 py-3 text-sm text-white font-mono placeholder-slate-500 focus:outline-none focus:border-emerald-500"
               />
+              <p className="text-[10px] text-slate-500 mt-1">{phone.length}/10 digits</p>
             </div>
 
             <div>
@@ -173,7 +193,7 @@ export default function AuthRootPage() {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || phone.length !== 10}
               className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:opacity-60 text-white font-bold text-sm py-3 rounded-xl shadow-xl shadow-blue-600/25 transition"
             >
               <span>{loading ? 'Checking…' : 'Continue'}</span>
@@ -181,13 +201,13 @@ export default function AuthRootPage() {
             </button>
 
             <p className="text-[11px] text-slate-500 text-center">
-              New here? Enter your Tripeloo number & password — we&apos;ll ask you to register if needed.
+              Enter the same 10-digit Tripeloo number you registered with.
             </p>
           </form>
         ) : (
           <form onSubmit={handleRegister} className="space-y-3">
             <p className="text-[11px] text-amber-300/90 bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2">
-              Phone not found. Create your staff profile to continue.
+              No account for this number yet. Register to continue.
             </p>
 
             <Field
@@ -199,19 +219,23 @@ export default function AuthRootPage() {
             />
             <Field
               icon={<Phone className="w-3.5 h-3.5 text-emerald-400" />}
-              label="Tripeloo Number"
+              label="Tripeloo Number (10 digits)"
               value={reg.phone}
-              onChange={(v) => setReg({ ...reg, phone: v })}
-              placeholder="Your Tripeloo work number"
+              onChange={(v) => setReg({ ...reg, phone: digitsOnlyTen(v) })}
+              placeholder="9876543210"
               mono
+              maxLength={10}
+              inputMode="numeric"
             />
             <Field
               icon={<Smartphone className="w-3.5 h-3.5 text-violet-400" />}
-              label="Personal Number"
+              label="Personal Number (10 digits)"
               value={reg.devicePersonalNumber}
-              onChange={(v) => setReg({ ...reg, devicePersonalNumber: v })}
-              placeholder="Your personal number"
+              onChange={(v) => setReg({ ...reg, devicePersonalNumber: digitsOnlyTen(v) })}
+              placeholder="9876543210"
               mono
+              maxLength={10}
+              inputMode="numeric"
             />
             <Field
               icon={<Mail className="w-3.5 h-3.5 text-slate-400" />}
@@ -279,7 +303,9 @@ function Field({
   onChange,
   placeholder,
   type = 'text',
-  mono = false
+  mono = false,
+  maxLength,
+  inputMode
 }: {
   icon: React.ReactNode;
   label: string;
@@ -288,6 +314,8 @@ function Field({
   placeholder: string;
   type?: string;
   mono?: boolean;
+  maxLength?: number;
+  inputMode?: 'numeric' | 'text' | 'email' | 'tel';
 }) {
   return (
     <div>
@@ -297,7 +325,9 @@ function Field({
       </label>
       <input
         type={type}
+        inputMode={inputMode}
         required
+        maxLength={maxLength}
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}

@@ -2,12 +2,9 @@ import { NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { connectToDatabase } from '@/lib/mongodb';
 import { StaffModel, sanitizeStaff } from '@/models/Staff';
+import { isValidTenDigitPhone, normalizePhone } from '@/lib/phone';
 
 const SALT_ROUNDS = 10;
-
-function normalizePhone(phone: string) {
-  return phone.replace(/[\s\-\(\)]/g, '').trim();
-}
 
 /** Register a new staff profile (when phone is not in DB). */
 export async function POST(request: Request) {
@@ -21,7 +18,7 @@ export async function POST(request: Request) {
     const name = String(body.name || '').trim();
     const phone = normalizePhone(String(body.phone || ''));
     const password = String(body.password || '');
-    const devicePersonalNumber = String(body.devicePersonalNumber || '').trim();
+    const devicePersonalNumber = normalizePhone(String(body.devicePersonalNumber || ''));
     const email = String(body.email || '').trim().toLowerCase();
     const expertise = String(body.expertise || '').trim();
     const languagesKnown = String(body.languagesKnown || '').trim();
@@ -29,6 +26,20 @@ export async function POST(request: Request) {
     if (!name || !phone || !password || !devicePersonalNumber || !email || !expertise || !languagesKnown) {
       return NextResponse.json(
         { success: false, message: 'All profile fields are required' },
+        { status: 400 }
+      );
+    }
+
+    if (!isValidTenDigitPhone(phone)) {
+      return NextResponse.json(
+        { success: false, code: 'INVALID_PHONE', message: 'Tripeloo number must be exactly 10 digits' },
+        { status: 400 }
+      );
+    }
+
+    if (!isValidTenDigitPhone(devicePersonalNumber)) {
+      return NextResponse.json(
+        { success: false, code: 'INVALID_PHONE', message: 'Personal number must be exactly 10 digits' },
         { status: 400 }
       );
     }
@@ -51,7 +62,6 @@ export async function POST(request: Request) {
     }
 
     const staffCount = await StaffModel.countDocuments({});
-    // First 3 registered users are admins
     const role = staffCount < 3 ? 'admin' : 'staff';
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);

@@ -2,12 +2,9 @@ import { NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import { connectToDatabase } from '@/lib/mongodb';
 import { StaffModel, sanitizeStaff } from '@/models/Staff';
+import { isValidTenDigitPhone, normalizePhone } from '@/lib/phone';
 
-function normalizePhone(phone: string) {
-  return phone.replace(/[\s\-\(\)]/g, '').trim();
-}
-
-/** Login with phone + password. Returns NOT_FOUND if phone is new. */
+/** Login with 10-digit Tripeloo number + password. */
 export async function POST(request: Request) {
   try {
     const conn = await connectToDatabase();
@@ -26,6 +23,13 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!isValidTenDigitPhone(phone)) {
+      return NextResponse.json(
+        { success: false, code: 'INVALID_PHONE', message: 'Tripeloo number must be exactly 10 digits' },
+        { status: 400 }
+      );
+    }
+
     const allStaff = await StaffModel.find({});
     const staff = allStaff.find((s) => normalizePhone(s.phone) === phone);
 
@@ -33,7 +37,7 @@ export async function POST(request: Request) {
       return NextResponse.json({
         success: false,
         code: 'NOT_FOUND',
-        message: 'No account found. Please register.'
+        message: 'No account found for this 10-digit number. Please register.'
       });
     }
 
